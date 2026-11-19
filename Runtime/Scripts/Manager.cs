@@ -1,3 +1,4 @@
+using System;
 using UdonSharp;
 using UnityEngine;
 using UnityEngine.UI;
@@ -93,17 +94,22 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
                 Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
             }
 
+            Log.Info($"{nameof(_imageDownloader.DownloadImage)}: Start");
             _downloadTask = _imageDownloader.DownloadImage(imageUrl, null, this);
+            Log.Info($"{nameof(_imageDownloader.DownloadImage)}: End");
+
             _imageUrl = imageUrl;
             RequestSerialization();
         }
 
         private static bool IsImageUrlValid(VRCUrl imageUrl)
         {
-            if (!Utilities.IsValid(imageUrl)) { return false; }
+            const string HttpsPrefix = "https://";
+
+            if (VRCUrl.IsNullOrEmpty(imageUrl)) { return false; }
+
             string imageUrlString = imageUrl.Get();
-            if (imageUrlString.Length < 4 || imageUrlString.Substring(0, 7) != "https://") { return false; }
-            return true;
+            return imageUrlString.Length > HttpsPrefix.Length && imageUrlString.StartsWith(HttpsPrefix, StringComparison.OrdinalIgnoreCase);
         }
 
         public override void OnImageLoadSuccess(IVRCImageDownload result)
@@ -125,9 +131,11 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
             SetSuccessUI(result);
         }
 
-        // DownloadImage() の開始と終了の間に呼ばれることがある
+        // "https://" などの不完全な URL では、DownloadImage() が戻る前に呼ばれることがある
         public override void OnImageLoadError(IVRCImageDownload result)
         {
+            Log.Info($"{nameof(OnImageLoadError)}: Start");
+
             if (result != _downloadTask)
             {
                 if (Utilities.IsValid(result))
