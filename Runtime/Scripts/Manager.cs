@@ -94,9 +94,9 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
                 Networking.SetOwner(Networking.LocalPlayer, this.gameObject);
             }
 
-            Log.Info($"{nameof(_imageDownloader.DownloadImage)}: Start");
+            Log.Info($"{nameof(_imageDownloader.DownloadImage)}: Before");
             _downloadTask = _imageDownloader.DownloadImage(imageUrl, null, this);
-            Log.Info($"{nameof(_imageDownloader.DownloadImage)}: End");
+            Log.Info($"{nameof(_imageDownloader.DownloadImage)}: After");
 
             _imageUrl = imageUrl;
             RequestSerialization();
@@ -114,40 +114,28 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
 
         public override void OnImageLoadSuccess(IVRCImageDownload result)
         {
-            if (result != _downloadTask)
-            {
-                if (Utilities.IsValid(result))
-                {
-                    result.Dispose();
-                }
-                return;
-            }
+            Log.Info($"{nameof(OnImageLoadSuccess)}: Start");
+
+            if (!Utilities.IsValid(result)) { return; }
+            if (result.State == VRCImageDownloadState.Unloaded) { return; }
 
             _downloadTask = null;
 
-            if (!Utilities.IsValid(result)) { return; }
-
             SetImage(result);
             SetSuccessUI(result);
+
+            Log.Info($"{nameof(OnImageLoadSuccess)}: End");
         }
 
-        // "https://" などの不完全な URL では、DownloadImage() が戻る前に呼ばれることがある
+        // "https://?" などの不完全な URL が入力された場合や、ダウンロードキューが上限に達した場合は、DownloadImage() が戻る前に呼ばれることがある
         public override void OnImageLoadError(IVRCImageDownload result)
         {
             Log.Info($"{nameof(OnImageLoadError)}: Start");
 
-            if (result != _downloadTask)
-            {
-                if (Utilities.IsValid(result))
-                {
-                    result.Dispose();
-                }
-                return;
-            }
+            if (!Utilities.IsValid(result)) { return; }
+            if (result.State == VRCImageDownloadState.Unloaded) { return; }
 
             _downloadTask = null;
-
-            if (!Utilities.IsValid(result)) { return; }
 
             SetErrorUI(result);
 
@@ -163,11 +151,14 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
 
         public override void OnDeserialization()
         {
-            if (Utilities.IsValid(_downloadTask))
+            if (Utilities.IsValid(_downloadTask) && _downloadTask.State != VRCImageDownloadState.Unloaded)
             {
                 _downloadTask.Dispose();
-                _downloadTask = null;
             }
+            _downloadTask = null;
+
+            if (!IsImageUrlValid(_imageUrl)) { return; }
+
             _downloadTask = _imageDownloader.DownloadImage(_imageUrl, null, this);
         }
 
