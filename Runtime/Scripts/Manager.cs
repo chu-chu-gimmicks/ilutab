@@ -84,7 +84,7 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
         private void ProcessUrl(VRCUrl imageUrl)
         {
             if (Utilities.IsValid(_downloadTask) && _downloadTask.State == VRCImageDownloadState.Pending) { return; }
-            if (!IsImageUrlValid(imageUrl, _imageUrl)) { return; }
+            if (!IsImageUrlValid(imageUrl)) { return; }
 
             Log.Info($"{nameof(ProcessUrl)}");
 
@@ -98,12 +98,11 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
             RequestSerialization();
         }
 
-        private static bool IsImageUrlValid(VRCUrl imageUrl, VRCUrl prevImageUrl)
+        private static bool IsImageUrlValid(VRCUrl imageUrl)
         {
             if (!Utilities.IsValid(imageUrl)) { return false; }
             string imageUrlString = imageUrl.Get();
-            if (imageUrlString.Length < 4 || imageUrlString.Substring(0, 4) != "http") { return false; }
-            if (Utilities.IsValid(prevImageUrl) && imageUrlString == prevImageUrl.Get()) { return false; }
+            if (imageUrlString.Length < 4 || imageUrlString.Substring(0, 7) != "https://") { return false; }
             return true;
         }
 
@@ -112,7 +111,11 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
             _downloadTask = null;
 
             if (!Utilities.IsValid(result)) { return; }
-            if (result.Url.Get() != _imageUrl.Get()) { return; }
+            if (result.Url.Get() != _imageUrl.Get())
+            {
+                result.Dispose();
+                return;
+            }
 
             SetImage(result);
             SetSuccessUI(result);
@@ -124,6 +127,11 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
             _downloadTask = null;
 
             if (!Utilities.IsValid(result)) { return; }
+            if (result.Url.Get() != _imageUrl.Get())
+            {
+                result.Dispose();
+                return;
+            }
 
             SetErrorUI(result);
 
@@ -139,6 +147,11 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
 
         public override void OnDeserialization()
         {
+            if (Utilities.IsValid(_downloadTask))
+            {
+                _downloadTask.Dispose();
+                _downloadTask = null;
+            }
             _downloadTask = _imageDownloader.DownloadImage(_imageUrl, null, this);
         }
 

@@ -64,14 +64,33 @@ PrefabInstance:
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 84441470148256432, guid: 596334dca3bfeec4ca2928eabfe36d7d,
+      objectReference: {fileID: 0}
+    - target: {fileID: 84441470148256432, guid: 596334dca3bfeec4ca2928eabfe36d7d,
         type: 3}
+      propertyPath: serializationData.SerializedFormat
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 655660753367688005, guid: 596334dca3bfeec4ca2928eabfe36d7d,
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 655660753367688005, guid: 596334dca3bfeec4ca2928eabfe36d7d,
+      objectReference: {fileID: 0}
+    - target: {fileID: 655660753367688005, guid: 596334dca3bfeec4ca2928eabfe36d7d,
         type: 3}
+      propertyPath: serializationData.SerializedFormat
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1483311490094137932, guid: 596334dca3bfeec4ca2928eabfe36d7d,
+        type: 3}
+      propertyPath: m_GlobalFontAsset
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2397475851873340438, guid: 596334dca3bfeec4ca2928eabfe36d7d,
+        type: 3}
+      propertyPath: serializedProgramAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: db1531b26ff207d428bcd8cf9a66e8a7,
+        type: 2}
     - target: {fileID: 6472554501814469052, guid: 596334dca3bfeec4ca2928eabfe36d7d,
         type: 3}
       propertyPath: m_Name
@@ -81,8 +100,12 @@ PrefabInstance:
         type: 3}
       propertyPath: serializationData.Prefab
       value: 
-      objectReference: {fileID: 7339929256205488397, guid: 596334dca3bfeec4ca2928eabfe36d7d,
+      objectReference: {fileID: 0}
+    - target: {fileID: 7339929256205488397, guid: 596334dca3bfeec4ca2928eabfe36d7d,
         type: 3}
+      propertyPath: serializationData.SerializedFormat
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
