@@ -108,14 +108,18 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
 
         public override void OnImageLoadSuccess(IVRCImageDownload result)
         {
+            if (result != _downloadTask)
+            {
+                if (Utilities.IsValid(result))
+                {
+                    result.Dispose();
+                }
+                return;
+            }
+
             _downloadTask = null;
 
             if (!Utilities.IsValid(result)) { return; }
-            if (result.Url.Get() != _imageUrl.Get())
-            {
-                result.Dispose();
-                return;
-            }
 
             SetImage(result);
             SetSuccessUI(result);
@@ -124,14 +128,18 @@ namespace ChuChuGimmicks.ILUTAB.Runtime
         // DownloadImage() の開始と終了の間に呼ばれることがある
         public override void OnImageLoadError(IVRCImageDownload result)
         {
+            if (result != _downloadTask)
+            {
+                if (Utilities.IsValid(result))
+                {
+                    result.Dispose();
+                }
+                return;
+            }
+
             _downloadTask = null;
 
             if (!Utilities.IsValid(result)) { return; }
-            if (result.Url.Get() != _imageUrl.Get())
-            {
-                result.Dispose();
-                return;
-            }
 
             SetErrorUI(result);
 
